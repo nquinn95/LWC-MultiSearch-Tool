@@ -1,0 +1,31 @@
+<template>
+    <!-- needs a an input box for each firstname, lastname, email, phone number and company -->
+    <!-- for now, only needs to be searchable by last name so lets focus on that -->
+    <!-- needs a search button component and a click handler that is taken care of in the javascript -->
+    <lightning-card>
+    <lightning-layout title="search">
+        <lightning-layout>
+            <lightning-layout-item size="12" padding="around-small">
+
+                <!-- lightning input boxes for each of our data fields -->
+                <lightning-input name="First Name" label="First Name" onchange={contactFirstNameChangeHandler}></lightning-input>
+                <lightning-input name="Last Name" label="Last Name" onchange={contactLastNameChangeHandler}></lightning-input>
+                <lightning-input type="email" name="Email" label="Email" onchange={contactEmailChangeHandler}></lightning-input>
+                <lightning-input name="Company" label="Company" onchange={contactCompanyChangeHandler}></lightning-input>
+                <lightning-input type="phone" name="Phone Number" label="Phone Number" onchange={contactPhoneChangeHandler}></lightning-input>
+
+
+
+                <lightning-button label="Search" onclick={searchComponents} class="slds-m-left_x-small"></lightning-button>     
+
+
+            </lightning-layout-item>         
+ 
+        </lightning-layout>
+
+    </lightning-layout>
+    </lightning-card>
+
+
+    
+</template>

@@ -1,0 +1,190 @@
+<template>
+  <lightning-card icon-name="standard:search" title="Search">
+    <lightning-layout icon-name="standard:search" title="Search">
+      <lightning-layout>
+        <lightning-layout-item size="12" padding="around-small">
+          <!-- lightning input boxes for each of our data fields -->
+          <lightning-input
+            name="First Name"
+            label="First Name"
+            onchange={contactFirstNameChangeHandler}
+          ></lightning-input>
+          <lightning-input
+            name="Last Name"
+            label="Last Name"
+            onchange={contactLastNameChangeHandler}
+          ></lightning-input>
+          <lightning-input
+            type="email"
+            name="Email"
+            label="Email"
+            onchange={contactEmailChangeHandler}
+          ></lightning-input>
+          <lightning-input
+            name="Company"
+            label="Company"
+            onchange={contactCompanyChangeHandler}
+          ></lightning-input>
+          <lightning-input
+            type="phone"
+            name="Phone Number"
+            label="Phone Number"
+            onchange={contactPhoneChangeHandler}
+          ></lightning-input>
+
+          <lightning-button
+            label="Search"
+            onclick={searchComponents}
+            class="slds-m-left_x-small"
+          ></lightning-button>
+        </lightning-layout-item>
+      </lightning-layout>
+    </lightning-layout>
+  </lightning-card>
+
+  <lightning-card
+    label="Contacts"
+    icon-name="standard:contact_list"
+    title="Contacts"
+  >
+    <lightning-button
+      label="New"
+      onclick={createNewContact}
+      class="slds-float_right"
+      slot="actions"
+    ></lightning-button>
+    <template if:true={booleanShowContacts}>
+    <lightning-datatable
+      key-field="Id"
+      data={contacts}
+      columns={columnContacts}
+      onrowaction={getContactId}
+      hide-checkbox-column="true"
+    >
+    </lightning-datatable>
+    </template>
+    <template if:false={booleanShowContacts}>
+      <div class="slds-p-around_small">
+        <h1> No records found.</h1>
+      </div>
+    </template>
+  </lightning-card>
+
+  <lightning-card label="Leads" title="Leads" icon-name="standard:lead_list">
+    <lightning-button
+      label="New"
+      onclick={createNewLeads}
+      class="slds-float_right"
+      slot="actions"
+    ></lightning-button>
+    <template if:true={booleanShowLeads}>
+    <lightning-datatable
+      key-field="Id"
+      data={leads}
+      columns={columnLeads}
+      onrowaction={getLeadId}
+      hide-checkbox-column="true"
+    >
+    </lightning-datatable>
+    </template>
+    <template if:false={booleanShowLeads}>
+      <div class="slds-p-around_small">
+        <h1> No records found. </h1>
+      </div>
+    </template>
+  </lightning-card>
+
+  <lightning-card label="Tasks" title="Tasks" icon-name="standard:task">
+
+    <!-- lightning button that is going to trigger the modal to open -->
+    <lightning-button label="New" onclick={createNewTaskOpen} slot="actions"></lightning-button>
+
+    <!-- modal code starts here -->
+      <template if:true={newTaskModal}>
+      <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+          <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"> -->
+            <!-- <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+              <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+            </svg> -->
+            <span class="slds-assistive-text">Cancel and close</span>
+          </button>
+          <div class="slds-modal__header">
+            <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Create New Task</h1>
+          </div>
+
+          <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1">
+  
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              <lightning-input label="Task Subject" name="Task Subject" onchange={taskSubjectChangeHandler} required></lightning-input>
+            </div> 
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              <lightning-input label="Task Status" name="Task Status" onchange={taskStatusChangeHandler} required></lightning-input>
+            </div>
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              <lightning-input label="Task Priority" name="Task Priority" onchange={taskPriorityChangeHandler} required ></lightning-input>
+            </div> 
+
+            <!-- contact lookup form -->
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              <c-custom-lookup obj-name="Contact" search-placeholder="Search Contacts" icon-name="standard:contact" onlookupselected={handleContactSelection} label-name={contactLabel}> </c-custom-lookup>
+            </div>
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              <c-custom-lookup obj-name="User" search-placeholder="Search Users" icon-name="standard:user" onlookupselected={handleUserSelection} label-name={ownerLabel}> </c-custom-lookup>
+            </div>
+            <div class="slds-grid slds-wrap slds-size_3-of-4">
+              
+              <c-custom-lookup obj-name="Account" search-placeholder="Search Account" icon-name="standard:account" onlookupselected={handleAccSelection} label-name={accountLabel}> </c-custom-lookup>
+              
+            </div>
+
+            <div class="slds-grid slds-wrap">
+              <!-- days due -->
+              <div class="slds-size_3-of-4">
+                <lightning-combobox name="Task Due By" label="Days to be completed" value={value} options={comboboxOptions} placeholder={daysValue} onchange={assignmentDaysChangeHandler} aria-autocomplete="list" required></lightning-combobox>
+              </div>
+                
+            </div>
+            
+            </div>
+          <div class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={createNewTaskClose}>Cancel</button>
+            <button class="slds-button slds-button_brand" onclick={createNewTaskSaveClose}>Save</button>
+          </div>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+      </template>
+      <!-- end of modal code -->
+
+    <lightning-layout>
+    <lightning-layout-item size="12" padding="around-small">
+      <!-- need input box to search for tasks based on user? -->
+      <lightning-input
+        name="User"
+        label="Task Subject Lookup"
+        onchange={taskSearchChangeHandler}
+      ></lightning-input>
+      <lightning-button label="Search" name="Search" onclick={taskSearchButton}></lightning-button>
+
+    </lightning-layout-item>
+
+  </lightning-layout>
+
+  <template if:true={booleanShowTasks}>
+    <lightning-datatable 
+    key-field="Id"
+    data={tasks}
+    columns={columnTasks}
+    onrowaction={getTaskId}
+    hide-checkbox-column="true">
+  </lightning-datatable>
+  </template>
+  <template if:false={booleanShowTasks}>
+    <div class="slds-p-around_small">
+      <h1>No records found.</h1>
+    </div>
+  </template>
+
+  </lightning-card>
+</template>
